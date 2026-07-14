@@ -1,0 +1,29 @@
+.button{
+    border: none;
+    outline: none;
+    padding-inline: 1.5rem;
+    padding-block: 0.75rem;
+    border-radius: 1rem;
+    cursor: pointer;
+
+    transition: all 0.3s ease-in-out;
+
+    &.primary-button{
+        background-color: #e1034d;
+        color: white;
+    }
+
+    &:not(:disabled):hover {
+        filter: brightness(1.05);
+    }
+
+    &:disabled{
+        opacity: 0.65;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    &:active{
+        transform: scale(1.1);
+    }
+}
