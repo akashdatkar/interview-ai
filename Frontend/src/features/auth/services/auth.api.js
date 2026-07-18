@@ -1,11 +1,12 @@
 import axios from "axios";
 
-// Use VITE_API_BASE_URL (deployed backend) and ensure no trailing slash
+// Use VITE_API_BASE_URL (deployed backend) and ensure no trailing slash.
+// Accept either the backend root or a URL that already includes /api/auth.
 const _base = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
-const base = _base.replace(/\/$/, "");
+const normalizedBase = _base.replace(/\/$/, "").replace(/\/api\/auth$/i, "");
 
 const api = axios.create({
-  baseURL: `${base}/api/auth`,
+  baseURL: `${normalizedBase}/api/auth`,
   withCredentials: true, // Include credentials in the request allow to store the session cookie in the browser
 });
 

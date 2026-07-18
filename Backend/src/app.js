@@ -11,24 +11,9 @@ const app=express();
 app.use(express.json());
 app.use(cookieParser());
 
-// Configure CORS to allow deployed frontend origin(s) from env
-const rawFrontends = process.env.FRONTEND_URL || 'http://localhost:5173';
-const allowedOrigins = rawFrontends
-  .split(',')
-  .map((origin) => origin.trim())
-  .filter(Boolean)
-  .map((origin) => (/^https?:\/\//i.test(origin) ? origin : `https://${origin}`));
-
+// Allow actual browser origins so cross-domain login/register works with credentials.
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin) {
-      return callback(null, true);
-    }
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-    return callback(new Error('Not allowed by CORS'));
-  },
+  origin: true,
   credentials: true,
 }));
 
