@@ -10,8 +10,16 @@ const app=express();
 
 app.use(express.json());
 app.use(cookieParser());
+
+// Configure CORS to allow the deployed frontend origin (set FRONTEND_URL in env)
+let frontendOrigin = process.env.FRONTEND_URL || 'http://localhost:5173';
+// If FRONTEND_URL was provided without protocol, default to https
+if (!/^https?:\/\//i.test(frontendOrigin)) {
+    frontendOrigin = `https://${frontendOrigin}`;
+}
+
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173', // Replace with your frontend URL
+    origin: frontendOrigin,
     credentials: true, // Allow cookies to be sent
 }));
 

@@ -1,7 +1,11 @@
 import axios from "axios";
 
+// Use VITE_API_BASE_URL (deployed backend) and ensure no trailing slash
+const _base = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+const base = _base.replace(/\/$/, "");
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api/auth",
+  baseURL: `${base}/api/auth`,
   withCredentials: true, // Include credentials in the request allow to store the session cookie in the browser
 });
 
