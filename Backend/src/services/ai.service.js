@@ -1,3 +1,4 @@
+const fs = require("fs");
 const { GoogleGenAI } = require("@google/genai");
 const { z } = require("zod");
 const { zodToJsonSchema } = require("zod-to-json-schema");
@@ -134,9 +135,33 @@ Rules:
 }
 
 async function generatePdfFromHtml(htmlContent) {
-    const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH
-        ? process.env.PUPPETEER_EXECUTABLE_PATH
-        : await puppeteer.executablePath();
+    let executablePath = process.env.PUPPETEER_EXECUTABLE_PATH || process.env.CHROME_PATH || process.env.CHROME_BIN || null;
+
+    const resolveExecutable = async () => {
+        if (executablePath && fs.existsSync(executablePath)) {
+            return executablePath;
+        }
+
+        if (executablePath) {
+            console.warn(`Puppeteer executable path ${executablePath} does not exist. Falling back to installed browser path.`);
+            executablePath = null;
+        }
+
+        try {
+            const defaultPath = await puppeteer.executablePath();
+            if (defaultPath && fs.existsSync(defaultPath)) {
+                return defaultPath;
+            }
+
+            console.warn(`Puppeteer default executable path ${defaultPath} does not exist.`);
+        } catch (error) {
+            console.warn("Unable to resolve Puppeteer executable path:", error.message);
+        }
+
+        return null;
+    };
+
+    const resolvedPath = await resolveExecutable();
 
     const launchOptions = {
         headless: 'new',
@@ -148,8 +173,8 @@ async function generatePdfFromHtml(htmlContent) {
         ]
     };
 
-    if (executablePath) {
-        launchOptions.executablePath = executablePath;
+    if (resolvedPath) {
+        launchOptions.executablePath = resolvedPath;
     }
 
     const browser = await puppeteer.launch(launchOptions);

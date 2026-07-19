@@ -2,7 +2,7 @@
   "scripts": {
     "dev": "npx nodemon server.js",
     "start": "node server.js",
-    "postinstall": "PUPPETEER_CACHE_DIR=/opt/render/.cache/puppeteer npx puppeteer install"
+    "postinstall": "cross-env PUPPETEER_CACHE_DIR=/opt/render/.cache/puppeteer npx puppeteer install"
   },
   "dependencies": {
     "@google/genai": "^2.10.0",
@@ -19,5 +19,8 @@
     "puppeteer": "^25.3.0",
     "zod": "^3.25.76",
     "zod-to-json-schema": "^3.25.2"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3"
   }
 }
