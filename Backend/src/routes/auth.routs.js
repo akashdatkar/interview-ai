@@ -19,12 +19,11 @@ authRouter.post('/register',authController.registerUser);
 authRouter.post('/login',authController.loginUserController);
 
 /**
- * @route GET /api/auth/logout
- * @desc Logout a user clear token from the cookie and add to blacklist                                                                                                                            
- * @access Public                                                                                                                                                            
+ * @route POST /api/auth/logout
+ * @desc Logout a user, clear the token cookie, and add it to the blacklist
+ * @access Public
  */
-authRouter.get('/logout',authController.logoutUserController);
-
+authRouter.post('/logout',authController.logoutUserController);
 /**
  * @route GET /api/auth/get-me
  * @desc Get current user details
