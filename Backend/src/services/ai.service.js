@@ -135,49 +135,68 @@ Rules:
 }
 
 async function generatePdfFromHtml(htmlContent) {
-    let executablePath = process.env.PUPPETEER_EXECUTABLE_PATH || process.env.CHROME_PATH || process.env.CHROME_BIN || null;
+    //let executablePath = process.env.PUPPETEER_EXECUTABLE_PATH || process.env.CHROME_PATH || process.env.CHROME_BIN || null;
 
-    const resolveExecutable = async () => {
-        if (executablePath && fs.existsSync(executablePath)) {
-            return executablePath;
-        }
+    // const resolveExecutable = async () => {
+    //     if (executablePath && fs.existsSync(executablePath)) {
+    //         return executablePath;
+    //     }
 
-        if (executablePath) {
-            console.warn(`Puppeteer executable path ${executablePath} does not exist. Falling back to installed browser path.`);
-            executablePath = null;
-        }
+    //     if (executablePath) {
+    //         console.warn(`Puppeteer executable path ${executablePath} does not exist. Falling back to installed browser path.`);
+    //         executablePath = null;
+    //     }
 
-        try {
-            const defaultPath = await puppeteer.executablePath();
-            if (defaultPath && fs.existsSync(defaultPath)) {
-                return defaultPath;
-            }
+    //     try {
+    //         const defaultPath = await puppeteer.executablePath();
+    //         if (defaultPath && fs.existsSync(defaultPath)) {
+    //             return defaultPath;
+    //         }
 
-            console.warn(`Puppeteer default executable path ${defaultPath} does not exist.`);
-        } catch (error) {
-            console.warn("Unable to resolve Puppeteer executable path:", error.message);
-        }
+    //         console.warn(`Puppeteer default executable path ${defaultPath} does not exist.`);
+    //     } catch (error) {
+    //         console.warn("Unable to resolve Puppeteer executable path:", error.message);
+    //     }
 
-        return null;
-    };
+    //     return null;
+    // };
 
-    const resolvedPath = await resolveExecutable();
+    // const resolvedPath = await resolveExecutable();
 
-    const launchOptions = {
-        headless: 'new',
-        args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            '--disable-dev-shm-usage',
-            '--disable-gpu'
-        ]
-    };
+    // const launchOptions = {
+    //     headless: 'new',
+    //     args: [
+    //         '--no-sandbox',
+    //         '--disable-setuid-sandbox',
+    //         '--disable-dev-shm-usage',
+    //         '--disable-gpu'
+    //     ]
+    // };
 
-    if (resolvedPath) {
-        launchOptions.executablePath = resolvedPath;
+    // if (resolvedPath) {
+    //     launchOptions.executablePath = resolvedPath;
+    // }
+
+    //const browser = await puppeteer.launch(launchOptions);
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage"
+      ]
+    });
+
+    console.log("Puppeteer version:", require("puppeteer/package.json").version);
+
+    try {
+      console.log("Executable:", puppeteer.executablePath());
+    } catch (err) {
+      console.error(err);
     }
 
-    const browser = await puppeteer.launch(launchOptions);
+    console.log("Cache dir:", process.env.PUPPETEER_CACHE_DIR);
+
     const page = await browser.newPage();
     await page.setContent(htmlContent, { waitUntil: "networkidle0" });
 
